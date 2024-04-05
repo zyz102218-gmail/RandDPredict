@@ -45,7 +45,7 @@ jobs:
         pip install -r src/requirements.txt
         pip install pyinstaller
     - name: Package Application
-      run: pyinstaller -F --noconsole src/main.py -n RandDCac.exe
+      run: pyinstaller -F -y src/main.py -n RandDCac.exe
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@master
