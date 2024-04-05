@@ -15,17 +15,17 @@ jobs:
         tag_name: PRE_Release #(required) tag name to delete
         github_token: ${{ secrets.GITHUB_TOKEN }} # (required) a GitHub token with write access to the repo that needs to be modified
         delete_release: true #(optional) default: true
-    - name: re-create PRE_Release # 得先干，linux的build更快，需要先做
-      id: create_release
-      uses: actions/create-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: "PRE_Release"
-        release_name: PRE_Release
-        body: This is a release created while code pushed
-        draft: false
-        prerelease: true
+    # - name: re-create PRE_Release # 得先干，linux的build更快，需要先做
+    #   id: create_release
+    #   uses: actions/create-release@master
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     tag_name: "PRE_Release"
+    #     release_name: PRE_Release
+    #     body: This is a release created while code pushed
+    #     draft: false
+    #     prerelease: true
     - name: Get current pre-release
       id: get_release
       uses: joutvhu/get-release@v1.0.3
@@ -72,7 +72,7 @@ jobs:
         pip install pyinstaller
     - name: Package Application
       run: |
-        pyinstaller -F --noconsole src/main.py -n RandDCac
+        pyinstaller -F src/main.py -n RandDCac
         tar -czvf RandDCac-ubuntu-x86_64.tar.gz dist
     - name: Get current pre-release
       id: get_release
@@ -107,7 +107,7 @@ jobs:
         pip install pyinstaller
     - name: Package Application
       run: |
-        pyinstaller -F --noconsole src/main.py -n RandDCac
+        pyinstaller -F src/main.py -n RandDCac
         tar -czvf RandDCac-macos-arm64.tar.gz dist
     - name: Get current pre-release
       id: get_release
