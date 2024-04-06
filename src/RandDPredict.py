@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 import os 
 
-def read_data_from_excel() -> tuple:
+def read_data_from_excel(n=42) -> tuple:
     """
     从Excel文件中读取数据，并返回原始数据矩阵、行和列的和。
-    
+    - n: 数据矩阵规模
     返回:
     - unpredict_a: 原始数据矩阵。
     - row_sums: 行和。
@@ -15,10 +15,10 @@ def read_data_from_excel() -> tuple:
     # predict_data = pd.read_excel("2017-ZHU.xlsx",sheet_name="Sheet2")
     org_data = pd.read_excel("input.xlsx",sheet_name="Sheet1",header=None)
     predict_data = pd.read_excel("input.xlsx",sheet_name='Sheet2',header=None)
-    unpredict_a  = np.array(org_data.loc[0:41,0:41])     # 原始数据矩阵
-    row_sums = np.array(predict_data.loc[0:41,42])       # 42个列和
-    column_sums = np.array(predict_data.loc[42,0:41])    # 42个行和
-    if unpredict_a.shape[0] != 42 or unpredict_a.shape[1] != 42:
+    unpredict_a  = np.array(org_data.loc[0:n-1,0:n-1])     # 原始数据矩阵
+    row_sums = np.array(predict_data.loc[0:n-1,n])       # 42个列和
+    column_sums = np.array(predict_data.loc[n,0:n-1])    # 42个行和
+    if unpredict_a.shape[0] != n or unpredict_a.shape[1] != n:
         raise ValueError("原始数据矩阵大小不正确！")
     elif np.sum(unpredict_a) == 0:
         raise ValueError("输入原始数据不合规")
@@ -102,7 +102,7 @@ def calculate_accuracy(T_adjusted, row_totals, col_totals):
     return accuracy
 
 
-def make_template() -> None:
+def make_template(n=42) -> None:
     """
     生成数据填写模板。
     """
@@ -122,16 +122,16 @@ def make_template() -> None:
             else:
                 print("输入有误。")
     
-    target_input_one = np.array([[0.0 for _ in range(42)] for _ in range(42)])  #  投入产出表输入
-    target_input_two = np.array([[0.0 if x == 42 or y == 42 else np.NaN for x in range(43)]for y in range(43)])
+    target_input_one = np.array([[0.0 for _ in range(n)] for _ in range(n)])  #  投入产出表输入
+    target_input_two = np.array([[0.0 if x == n or y == n else np.NaN for x in range(n+1)]for y in range(n+1)])
     out_one = pd.DataFrame(target_input_one)
     out_two = pd.DataFrame(target_input_two)
     # writer = pd.ExcelWriter("input.xlsx")
     with pd.ExcelWriter("input.xlsx") as writer:
         out_one.to_excel(writer,sheet_name="Sheet1", index=False,header=None)
         out_two.to_excel(writer,sheet_name="Sheet2",index=False,header=None)
-    print("已创建模板；请将投入产出表参考值直接粘贴到Sheet1，只粘贴42x42（或者包含求和，即43x43)数据，不要粘贴表头")
-    print("在Sheet2中粘贴投入产出表的猜测依据数据，只粘贴行和列的求和值，即在第43行和第43列分别粘贴求和值。")
+    print(f"已创建模板；请将投入产出表参考值直接粘贴到Sheet1，只粘贴{n}x{n}（或者包含求和，即{n+1}x{n+1})数据，不要粘贴表头")
+    print(f"在Sheet2中粘贴投入产出表的猜测依据数据，只粘贴行和列的求和值，即在第{n+1}行和第{n+1}列分别粘贴求和值。")
     
 
 
